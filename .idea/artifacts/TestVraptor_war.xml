@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="TestVraptor:war">
-    <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="TestVraptor.war">
-      <element id="artifact" artifact-name="TestVraptor:war exploded" />
-    </root>
-  </artifact>
-</component>
