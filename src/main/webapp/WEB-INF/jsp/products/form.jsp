@@ -19,6 +19,11 @@
 </form>
 
 <ul>
+
+    <c:forEach var="error" items="${errors}">
+        ${error.category} : ${error.message}<br />
+    </c:forEach>
+
     <c:if test="${errors} != null">
         <c:forEach var="error" items="${errors}">
             ${error.category} : ${error.message}<br />
