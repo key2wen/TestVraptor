@@ -2,12 +2,17 @@ package com.hz.dao;
 
 import br.com.caelum.vraptor.ioc.Component;
 import com.hz.dataobject.Product;
+import org.hibernate.Session;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ProductDao {
+public class ProductDao extends HibernateGenericDAO<Product> implements  Repository<Product>{
+
+    public ProductDao(Session session) {
+        super(session);
+    }
 
     public List<Product> listAll() {
 
@@ -18,7 +23,8 @@ public class ProductDao {
         return lists;
     }
 
-    public void save(Product product) {
+    public void save1(Product product) {
         System.out.println("Save Product:" + product == null ? "null" : product);
+        add(product);
     }
 }

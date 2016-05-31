@@ -1,17 +1,25 @@
 package com.hz.dataobject;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+
+import br.com.caelum.vraptor.ioc.Component;
+import br.com.caelum.vraptor.ioc.PrototypeScoped;
+
+import javax.persistence.*;
 
 @Entity
+@Table(name="t_product")
+@Component
+@PrototypeScoped
 public class Product {
     @Id
     @GeneratedValue
     private Long id;
 
+    @Column(name = "`name`")
     private String name;
+    @Column(name="`desc`")
     private String description;
+    @Column(name="price")
     private Double price;
 
     public Product() {

@@ -11,8 +11,8 @@ import javax.annotation.PreDestroy;
 
 
 //需要读取hibernate的配置文件
-//@Component
-//@ApplicationScoped
+@Component
+@ApplicationScoped
 public class SessionFactoryCreator implements ComponentFactory<SessionFactory> {
 
     private SessionFactory factory;

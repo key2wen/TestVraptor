@@ -70,7 +70,7 @@ public class ProductsController {
         });
         validator.onErrorUsePageOf(ProductsController.class).form();
 
-        productDao.save(product);
+        productDao.save1(product);
         result.redirectTo(ProductsController.class).list();
     }
 
