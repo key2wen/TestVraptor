@@ -8,20 +8,23 @@ import br.com.caelum.vraptor.ioc.RequestScoped;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 import org.hibernate.Session;
 import org.hibernate.impl.SessionImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 
 @RequestScoped
-@Intercepts(before = Log.class) //在Log前面先执行拦截
+@Intercepts(after = Log.class) //在Log后面先执行拦截
 public class DatabaseInterceptor implements br.com.caelum.vraptor.interceptor.Interceptor {
 
+    Logger log = LoggerFactory.getLogger(DatabaseInterceptor.class);
     private final Session session;
     private final Result result;
     private final HttpServletRequest request;
 
-    public DatabaseInterceptor(Result result, HttpServletRequest request) {
-//        this.session = session;
-        this.session = null;
+    public DatabaseInterceptor(Result result, HttpServletRequest request, Session session) {
+        this.session = session;
         this.result = result;
         this.request = request;
     }
@@ -30,15 +33,18 @@ public class DatabaseInterceptor implements br.com.caelum.vraptor.interceptor.In
                           Object instance) throws InterceptionException {
         result.include("contextPath", request.getContextPath());
         try {
-            if (session != null) {
-                session.beginTransaction();
-            }
             System.out.println("database intercept start...");
+            log.info("database intercepter start...");
+            session.beginTransaction();
             stack.next(method, instance);
-            if (session != null) {
-                session.flush();
-            }
+            log.info("database intercepter over...");
+            session.getTransaction().commit();
             System.out.println("database intercept stop...");
+        } catch (Exception e) {
+            if (session.getTransaction() != null) {
+                session.getTransaction().rollback();
+            }
+            throw e;
         } finally {
             if (session != null) {
                 session.close();
@@ -46,8 +52,13 @@ public class DatabaseInterceptor implements br.com.caelum.vraptor.interceptor.In
         }
     }
 
+    //该方法返回false则不进行拦截，直接放行
     public boolean accepts(ResourceMethod method) {
-        return true;
+        if (request.getRequestURI().endsWith("add") || request.getRequestURI().endsWith("save") ||
+                request.getRequestURI().endsWith("update") || request.getRequestURI().endsWith("delete")) {
+            return true;
+        }
+        return false;
     }
 
 }

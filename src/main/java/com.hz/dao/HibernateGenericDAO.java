@@ -18,47 +18,47 @@ import java.lang.reflect.ParameterizedType;
  * @author Rafael Steil
  */
 public class HibernateGenericDAO<T> implements Repository<T> {
-	protected Class<T> persistClass;
-	protected final Session session;
+    protected Class<T> persistClass;
+    protected final Session session;
 
-	@SuppressWarnings("unchecked")
-	public HibernateGenericDAO(Session session) {
-		this.session = session;
-		//得到泛型的具体的类型
-		this.persistClass = (Class<T>)((ParameterizedType)this.getClass()
-			.getGenericSuperclass()).getActualTypeArguments()[0];
-	}
+    @SuppressWarnings("unchecked")
+    public HibernateGenericDAO(Session session) {
+        this.session = session;
+        //得到泛型的具体的类型
+        this.persistClass = (Class<T>) ((ParameterizedType) this.getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[0];
+    }
 
-	/**
-	 *
-	 */
-	@Override
-	public void remove(T entity) {
-		session.delete(entity);
-	}
+    /**
+     *
+     */
+    @Override
+    public void remove(T entity) {
+        session.delete(entity);
+    }
 
-	/**
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public T get(int id) {
-		return (T)session.get(this.persistClass, id);
-	}
+    /**
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public T get(int id) {
+        return (T) session.get(this.persistClass, id);
+    }
 
-	/**
-	 */
-	@Override
-	public void add(T entity) {
-		session.getTransaction().begin();
-		session.save(entity);
-		session.getTransaction().commit();
-		session.close();
-	}
+    /**
+     */
+    @Override
+    public void add(T entity) {
+//		session.getTransaction().begin();
+        session.save(entity);
+//		session.getTransaction().commit();
+//		session.close();
+    }
 
-	/**
-	 */
-	@Override
-	public void update(T entity) {
-		session.update(entity);
-	}
+    /**
+     */
+    @Override
+    public void update(T entity) {
+        session.update(entity);
+    }
 }
