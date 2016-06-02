@@ -12,6 +12,7 @@ import com.hz.dataobject.Product;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import static br.com.caelum.vraptor.view.Results.xml;
 
@@ -116,7 +117,7 @@ public class ProductsController {
     }
 
     //下载
-    public Download picture(String name) throws  Exception{
+    public Download picture(String name) throws Exception {
 
         String path = request.getServletPath();
 
@@ -127,11 +128,29 @@ public class ProductsController {
         return new FileDownload(file, contentType, filename);
     }
 
+
+    public void error() {
+        Map<String, Object> maps = result.included();
+        if(maps !=null){
+            for(String key : maps.keySet()){
+                System.out.println(key + "___" + maps.get(key));
+//                result.include(key, maps.get(key));
+            }
+        }
+        result.include("myerror", "is my self defined error!");
+    }
+
     //exception handler
-//    @Post
-//    public void addCustomer(Customer newCustomer) {
-//        result.on(CustomerAlreadyExistsException.class).forwardTo(this).addCustomer();
-//
-//        customerManager.store(newCustomer);
-//    }
+    @Get
+    public void testError(String msg) {
+
+        result.on(Exception.class).forwardTo(this).error();
+
+        if ("error".equals(msg)) {
+            throw new NullPointerException("null..");
+        }
+
+        //正常的情况。。
+        result.redirectTo(this.getClass()).form();
+    }
 }
